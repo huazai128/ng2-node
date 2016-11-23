@@ -1,0 +1,94 @@
+<div class="card" *ngIf="isLoading">
+  <h4 class="card-header">Loading...</h4>
+  <div class="card-block text-xs-center">
+    <i class="fa fa-circle-o-notch fa-shin fa-3x"></i>
+  </div>
+</div>
+
+<!-- [message]:定义的属性可以把AppComponent的参数传递到ToastComponent中；通过@Input获取来获取参数 -->
+<app-toast [message]="toast.message"></app-toast>
+
+
+
+
+<div class="card" *ngIf="!isLoading">
+  <h4 class="card-header"> Current cats {{cats.length}}</h4>
+  <div class="card-block">
+    <!-- table-striped:内行是虚线 -->
+    <table class="table table-bordered table-striped">
+      <thead class="thead-default">
+      <tr>
+        <th>Name</th>
+        <th>Age</th>
+        <th>Weight</th>
+        <th>Actions</th>
+      </tr>
+      </thead>
+      <!-- 判断cats -->
+      <tbody *ngIf="cats.length === 0">
+      <tr>
+        <td colspan="4" class="text-center">There are no cats in the DB. Add a new cat below.</td>
+      </tr>
+      </tbody>
+      <!-- 判断是否编辑 -->
+      <tbody *ngIf="!isEditing">
+      <tr *ngFor="let cat of cats">
+        <td>{{cat.name}}</td>
+        <td>{{cat.age}}</td>
+        <td>{{cat.weight}}</td>
+        <td>
+          <button class="btn btn-sm btn-warning" (click)="enableEditing(cat)">
+            <i class="fa fa-pencil"> Edit</i>
+          </button>
+          <button class="btn  btn-sm btn-danger" (click)="deleteCat(cat)">
+            <i class="fa fa-trash"> Delete</i>
+          </button>
+        </td>
+      </tr>
+      </tbody>
+      <!-- 编辑 -->
+      <tbody *ngIf="isEditing">
+      <tr>
+        <td colspan="4">
+          <form class="form-inline" #form="ngForm" (ngSubmit)="editCat(cat)" style="display: inline;">
+            <div class="form-group">
+              <input type="text" class="form-control" name="name" [(ngModel)]="cat.name" placeholder="Name" required>
+            </div>
+            <div class="form-group">
+              <input type="number" class="form-control" name="age" [(ngModel)]="cat.age" placeholder="Age" required>
+            </div>
+            <div class="form-group">
+              <input type="number" class="form-control" name="weight" [(ngModel)]="cat.weight" placeholder="Weight" required>
+            </div>
+            <button type="submit" class="btn btn-sm btn-primary" [disabled]="!form.form.valid">
+              <i class="fa fa-floppy-o"> Save</i>
+            </button>
+          </form>
+          <button type="button" class="btn btn-sm btn-warning" (click)="cancelEditing()">
+            <i class="fa fa-times"> Cancel</i>
+          </button>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+
+<div class="card" *ngIf="!isEditing">
+  <h4 class="card-header text-center">Add new cat</h4>
+  <div class="card-block">
+    <form class="form-inline" [formGroup]="addCatForm" (ngSubmit)="addCat()" style="text-align:center">
+      <div class="form-group">
+        <input class="form-control" type="text" name="name" formControlName="name" placeholder="Name">
+      </div>
+      <div class="form-group">
+        <input class="form-control" type="number" name="age" formControlName="age" placeholder="Age" min="0">
+      </div>
+      <div class="form-group">
+        <input class="form-control" type="number" name="weight" formControlName="weight" placeholder="Weight" step="any" min="0">
+      </div>
+      <button class="btn btn-primary" type="submit" [disabled]="!addCatForm.valid"><i class="fa fa-floppy-o"></i> Add</button>
+    </form>
+  </div>
+</div>
